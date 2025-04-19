@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,3 +60,66 @@
     <div id="results"></div>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Song Search</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <script>
+        async function searchSong() {
+            const query = document.getElementById('searchInput').value;
+            if (query.length > 2) { // Инициировать поиск только при длине строки > 2
+                const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = ''; // Очистить предыдущие результаты
+                data.forEach(song => {
+                    const songElement = document.createElement('div');
+                    songElement.innerHTML = `<p><a href="${song.url}" target="_blank">${song.title}</a></p>`;
+                    resultsDiv.appendChild(songElement);
+                });
+            }
+        }Y
+
+        function startVoiceInput() {
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.lang = 'en-US'; // Установите язык распознавания
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                recognition.start();
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('searchInput').value = transcript;
+                    searchSong(); // Автоматически инициировать поиск
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    alert('Voice recognition failed. Please try again.');
+                };
+
+                recognition.onend = function() {
+                    console.log('Speech recognition ended.');
+                };
+            } else {
+                alert('Your browser does not support voice recognition.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Live Song Search</h1>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <input type="text" id="searchInput" oninput="searchSong()" placeholder="Type lyrics..." style="flex-grow: 1;">
+        <button onclick="startVoiceInput()" style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">🎤</button>
+    </div>
+    <div id="results"></div>
+</body>
+</html>
+>>>>>>> 0a57eff4c89059c2ba050995d7adc4ce09106d42
